@@ -55,17 +55,10 @@ fn find_best_tile_f64(image: &[f64], tiles: &Vec<Vec<f64>>, diff_func: fn(&[f64]
 
 
 
-/// Formats the sum of two numbers as string.
-#[pyfunction]
-fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
-    Ok((a + b).to_string())
-}
-
 /// A Python module implemented in Rust.
 #[pymodule]
 #[pyo3(name="_lib")]
 fn rusty_mosaic(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
     m.add_function(wrap_pyfunction!(find_best_tiles_i32, m)?)?;
     m.add_function(wrap_pyfunction!(find_best_tiles_f64, m)?)?;
     Ok(())

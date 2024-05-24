@@ -25,7 +25,6 @@ class TileLibrary:
     def _process_tile(
         tile_path: str, tile_size: int, image_type: str = "L"
     ) -> np.ndarray:
-        print(f"tile_path = {pathlib.Path(tile_path).name}")
         with Image.open(tile_path) as image:
             image = utils.crop_largest_square(image)
             image = utils.resize_image(image, (tile_size, tile_size))
