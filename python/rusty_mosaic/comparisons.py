@@ -28,5 +28,5 @@ class TileComparator(typing.Protocol):
         """
 
 
-euclid_distance_rust_i32 = _lib.find_best_tiles_i32
-euclid_distance_rust_f64 = _lib.find_best_tiles_f64
+euclid_distance_rust_i32: TileComparator = _lib.find_best_tiles_i32
+euclid_distance_rust_f64: TileComparator = _lib.find_best_tiles_f64
