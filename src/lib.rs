@@ -22,7 +22,7 @@ fn elementwise_squared_difference_f64(vec1: &[f64], vec2: &[f64]) -> f64 {
 #[pyfunction]
 fn find_best_tiles_i32(images: Vec<Vec<i32>>, tiles: Vec<Vec<i32>>) -> Vec<usize> {
     images
-        .par_iter()
+        .iter()
         .map(|image| find_best_tile_i32(image, &tiles))
         .collect()
 }

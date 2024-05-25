@@ -19,9 +19,13 @@ class ImageMosaic:
     tile_size: int
     rows: int
 
-    @staticmethod
-    def _image_to_blocks(image: Image.Image, tile_size: int) -> np.ndarray:
+    @classmethod
+    def _image_to_blocks(cls, image: Image.Image, tile_size: int) -> np.ndarray:
         data = np.asarray(image)
+        return cls._array_to_blocks(data, tile_size)
+
+    @staticmethod
+    def _array_to_blocks(data: np.ndarray, tile_size: int) -> np.ndarray:
         height, width, channels = [*data.shape, 1][:3]
         rows = height // tile_size
         cols = width // tile_size
@@ -30,7 +34,7 @@ class ImageMosaic:
         ).reshape(rows * cols, tile_size * tile_size * channels)
 
     @staticmethod
-    def _blocks_to_image(blocks: np.ndarray, tile_size: int, rows: int) -> Image.Image:
+    def _blocks_to_pixmap(blocks: np.ndarray, tile_size: int, rows: int) -> np.ndarray:
         channels = blocks.shape[1] / (tile_size * tile_size)
         if channels == 1:
             blocks = blocks.reshape(rows, -1, tile_size, tile_size)
@@ -40,7 +44,13 @@ class ImageMosaic:
         pix_map = np.concatenate(
             [np.concatenate(block, axis=1) for block in blocks], axis=0
         )
-        return Image.fromarray(pix_map.astype(np.uint8))
+        return pix_map.astype(np.uint8)
+
+    @classmethod
+    def _blocks_to_image(
+        cls, blocks: np.ndarray, tile_size: int, rows: int
+    ) -> Image.Image:
+        return Image.fromarray(cls._blocks_to_pixmap(blocks, tile_size, rows))
 
     @classmethod
     def from_image(cls, image: Image.Image, tile_size: int) -> "ImageMosaic":
@@ -52,6 +62,10 @@ class ImageMosaic:
     @property
     def image(self) -> Image.Image:
         return self._blocks_to_image(self.tile_data, self.tile_size, self.rows)
+
+    @property
+    def pixmap(self) -> np.ndarray:
+        return self._blocks_to_pixmap(self.tile_data, self.tile_size, self.rows)
 
     def save(self, outfile: typing.Union[str, pathlib.Path]):
         image = self.image
