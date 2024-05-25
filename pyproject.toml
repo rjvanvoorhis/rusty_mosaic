@@ -1,3 +1,20 @@
+[tool.poetry]
+name = "rusty_mosaic"
+version = "0.1.0"
+description = "Starter project for Maturin w/Py03 and Poetry"
+authors = ["Ryan Van Voorhis <rjvanvoorhis@crimson.ua.edu>"]
+packages = [{include = "rusty_mosaic", from="python"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+typer = {extras = ["all"], version = "^0.12.3"}
+maturin = "^1.5.1"
+numpy = "^1.26.4"
+pillow = "^10.3.0"
+
+[project.scripts]
+mosaicfy = "rusty_mosaic.cli:app"
+
 [build-system]
 requires = ["maturin>=1.5,<2.0"]
 build-backend = "maturin"

@@ -10,9 +10,7 @@ import numpy as np
 from rusty_mosaic import utils
 
 ASCII_TILES = pathlib.Path(__file__).parent / "__assets__" / "ascii_tiles"
-ASCII_TILE_TEXT = list(
-    f"{string.ascii_letters}0123456789_-+[]{{}}\\|/,.:;'\"!@#$%^&*?><~` "
-)
+
 
 
 @dataclasses.dataclass

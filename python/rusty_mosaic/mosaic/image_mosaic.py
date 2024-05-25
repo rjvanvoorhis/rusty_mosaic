@@ -12,7 +12,7 @@ from rusty_mosaic import tile_library
 
 
 @dataclasses.dataclass
-class Mosaic:
+class ImageMosaic:
     MAX_SIZE: typing.ClassVar[int] = 4_000
 
     tile_data: np.ndarray
@@ -43,7 +43,7 @@ class Mosaic:
         return Image.fromarray(pix_map.astype(np.uint8))
 
     @classmethod
-    def from_image(cls, image: Image.Image, tile_size: int) -> "Mosaic":
+    def from_image(cls, image: Image.Image, tile_size: int) -> "ImageMosaic":
         image = utils.crop_tile(image, tile_size)
         tile_data = cls._image_to_blocks(image, tile_size)
         rows = image.size[1] // tile_size
@@ -80,7 +80,7 @@ class Mosaic:
         tiles: tile_library.TileLibrary,
         cmp: comparisons.TileComparator = comparisons.euclid_distance_rust_i32,
         inplace: bool = False,
-    ) -> "Mosaic":
+    ) -> "ImageMosaic":
         best = cmp(self.tile_data, tiles.tile_data)
         if inplace:
             self.tile_data = tiles.tile_data[best]
@@ -88,13 +88,3 @@ class Mosaic:
 
         tile_data = tiles.tile_data[best]
         return type(self)(tile_data, self.tile_size, self.rows)
-
-    def to_text(
-        self,
-        tiles: tile_library.TileLibrary,
-        cmp: comparisons.TileComparator = comparisons.euclid_distance_rust_i32,
-        text_bank: str = tile_library.ASCII_TILE_TEXT,
-    ) -> str:
-        best = cmp(self.tile_data, tiles.tile_data)
-        text = np.asarray(text_bank)[best].reshape(self.rows, -1)
-        return "\n".join("".join(row) for row in text)
