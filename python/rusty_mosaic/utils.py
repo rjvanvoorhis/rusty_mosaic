@@ -1,4 +1,6 @@
 import typing
+import dataclasses
+import threading
 from PIL import Image
 
 
@@ -47,3 +49,34 @@ def crop_tile(image: Image.Image, tile_size: int) -> Image.Image:
             (height - height_crop) + (height_crop // 2),
         )
     )
+
+
+@dataclasses.dataclass
+class Toggle:
+    value: bool = True
+
+    def __bool__(self) -> bool:
+        return self.value
+
+    def __call__(self) -> "Toggle":
+        self.value = not self.value
+        return self
+
+
+class KeypressThread(threading.Thread):
+
+    def __init__(
+        self,
+        callback: typing.Callable[[str], bool],
+        name: str = "keypress-thread",
+        prompt: str = "",
+    ):
+        self.callback = callback
+        self.prompt = prompt
+        super().__init__(name=name, daemon=True)
+        self.start()
+
+    def run(self):
+        should_continue = True
+        while should_continue:
+            should_continue = self.callback(input(self.prompt))

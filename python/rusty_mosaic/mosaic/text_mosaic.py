@@ -3,6 +3,7 @@ import string
 import pathlib
 import dataclasses
 import numpy as np
+from PIL import Image
 
 import numpy.typing as npt
 
@@ -20,6 +21,17 @@ class TextMosaic:
     tile_data: npt.NDArray[np.str_]
     text_map: npt.NDArray[np.str_]
     image_mosaic: ImageMosaic
+
+    @classmethod
+    def from_image(
+        cls,
+        image: Image.Image,
+        tile_size: int,
+        text_map: npt.NDArray[np.str_] = ASCII_TILE_TEXT_MAP,
+    ) -> "TextMosaic":
+        image_mosaic = ImageMosaic.from_image(image, tile_size)
+        tile_data = np.full(image_mosaic.tile_data.shape[0], " ")
+        return cls(tile_data=tile_data, text_map=text_map, image_mosaic=image_mosaic)
 
     @classmethod
     def load(
