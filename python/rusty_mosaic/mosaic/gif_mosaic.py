@@ -12,8 +12,6 @@ from rusty_mosaic import mosaic
 from rusty_mosaic import comparisons
 from rusty_mosaic import tile_library
 
-MSG = "This method is not yet implemetned"
-
 
 @dataclasses.dataclass
 class GifMosaic:
@@ -41,7 +39,7 @@ class GifMosaic:
         fps = (
             metadata.get("fps")
             or int(frames.shape[0] / metadata.get("duration", 1_000_000_000))
-            or 60
+            or 30
         )
         mosaics = [
             mosaic.ImageMosaic.from_image(
