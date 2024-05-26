@@ -24,10 +24,10 @@ class TextGifMosaic:
 
     def save(self, outfile: typing.Union[str, pathlib.Path]):
         outfile = pathlib.Path(outfile)
-        if not outfile.is_dir():
+        if outfile.exists() and not outfile.is_dir():
             raise ValueError(f"{outfile} is not a directory")
         outfile.mkdir(parents=True, exist_ok=True)
-        frame_padding = len(str(self.frames[0]))
+        frame_padding = len(str(len(self.frames))) + 1
         for idx, frame in enumerate(self.frames):
             frame.save(outfile / f"frame-{idx:0{frame_padding}}.txt")
 

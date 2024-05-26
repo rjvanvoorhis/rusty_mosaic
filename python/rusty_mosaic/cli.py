@@ -33,23 +33,22 @@ def make_show_gif_mosaic(outfile: typing.Optional[pathlib.Path] = None):
     return show_gif_mosaic
 
 
-def make_keypress_callback(toggle: rusty_mosaic.utils.Toggle):
-    def keypress_callback(value: str) -> bool:
-        should_continue = value.lower() not in ["q", "quit", "x", "q!", " ", ""]
-        toggle.value = should_continue
-        return should_continue
-
-    return keypress_callback
-
-
 def show_text_gif(mosaic: rusty_mosaic.mosaic.TextGifMosaic) -> None:
-    should_continue = rusty_mosaic.utils.Toggle(True)
-    rusty_mosaic.utils.KeypressThread(callback=make_keypress_callback(should_continue))
+    counter = {"value": 0}
+
+    def should_continue():
+        return counter["value"] <= 0
+
+    def should_continue_callback(_: str) -> bool:
+        counter["value"] += 1
+        return should_continue()
+
+    rusty_mosaic.utils.KeypressThread(callback=should_continue_callback)
     for frame_idx in itertools.cycle(range(len(mosaic.frames))):
         show_text_mosaic(mosaic.frames[frame_idx])
         typer.echo("Press enter to exit...")
         time.sleep(1.5 / mosaic.fps)
-        if not should_continue:
+        if not should_continue():
             break
         typer.clear()
 

@@ -51,18 +51,6 @@ def crop_tile(image: Image.Image, tile_size: int) -> Image.Image:
     )
 
 
-@dataclasses.dataclass
-class Toggle:
-    value: bool = True
-
-    def __bool__(self) -> bool:
-        return self.value
-
-    def __call__(self) -> "Toggle":
-        self.value = not self.value
-        return self
-
-
 class KeypressThread(threading.Thread):
 
     def __init__(
