@@ -5,14 +5,6 @@ description = "Starter project for Maturin w/Py03 and Poetry"
 authors = ["Ryan Van Voorhis <rjvanvoorhis@crimson.ua.edu>"]
 packages = [{include = "rusty_mosaic", from="python"}]
 
-[tool.poetry.dependencies]
-python = ">=3.9"
-typer = {extras = ["all"], version = "^0.12.3"}
-maturin = "^1.5.1"
-numpy = "^1.26.4"
-pillow = "^10.3.0"
-imageio = "^2.34.1"
-
 [project.scripts]
 mosaicfy = "rusty_mosaic.cli:app"
 
@@ -29,11 +21,20 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
+dependencies = [
+     'typer[all] >= 0.12.3',
+     'maturin >= 1.5.1, < 2',
+     'numpy >= 1.26.4',
+     'pillow >= 10.3.0',
+     'imageio >= 2.34.1',
+     'requests >= 2.32.3'
+] 
 
 [tool.maturin]
 python-source = "python"
 module-name = "rusty_mosaic._lib"
 features = ["pyo3/extension-module"]
+
 
 
 [package.package_data]

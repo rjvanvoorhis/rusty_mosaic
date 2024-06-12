@@ -1,5 +1,4 @@
 import typing
-import string
 import pathlib
 import dataclasses
 
@@ -10,7 +9,6 @@ import numpy as np
 from rusty_mosaic import utils
 
 ASCII_TILES = pathlib.Path(__file__).parent / "__assets__" / "ascii_tiles"
-
 
 
 @dataclasses.dataclass
@@ -36,12 +34,8 @@ class TileLibrary:
         tile_size: int = 8,
         image_type: str = "L",
     ) -> "TileLibrary":
-        return cls(
-            tile_size=tile_size,
-            tile_data=np.asarray(
-                [
-                    cls._process_tile((image_path.absolute()), tile_size, image_type)
-                    for image_path in sorted(pathlib.Path(path).glob("*"))
-                ]
-            ),
-        )
+        tile_data = [
+            cls._process_tile(str(image_path.absolute()), tile_size, image_type)
+            for image_path in sorted(pathlib.Path(path).glob("*"))
+        ]
+        return cls(tile_size=tile_size, tile_data=np.asarray(tile_data))

@@ -2,7 +2,7 @@ import typing
 import numpy as np
 import numpy.typing as npt
 
-from rusty_mosaic import _lib
+from rusty_mosaic import _lib  # type: ignore
 
 
 IndexArray = npt.NDArray[np.uint]
@@ -26,7 +26,9 @@ class TileComparator(typing.Protocol):
         Returns:
             npt.NDArray[np.uint]: A list of tile indexes. Each item in the list is the index in tiles that is the the most similar to the corresponding image block at that position
         """
+        ...
 
 
 euclid_distance_rust_i32: TileComparator = _lib.find_best_tiles_i32
 euclid_distance_rust_f64: TileComparator = _lib.find_best_tiles_f64
+parallel_euclid_distance_rust_i32: TileComparator = _lib.parallel_find_best_tiles_i32

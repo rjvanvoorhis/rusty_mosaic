@@ -40,9 +40,12 @@ class TextMosaic:
         tile_size: int = 8,
         image_type: str = "L",
         scale: typing.Union[int, float] = 1,
+        invert: bool = False,
         text_map: npt.NDArray[np.str_] = ASCII_TILE_TEXT_MAP,
     ) -> "TextMosaic":
-        image_mosaic = ImageMosaic.load(filename, tile_size, image_type, scale)
+        image_mosaic = ImageMosaic.load(
+            filename, tile_size, image_type, scale, invert=invert
+        )
         tile_data = np.full(image_mosaic.tile_data.shape[0], " ")
         return cls(tile_data=tile_data, text_map=text_map, image_mosaic=image_mosaic)
 
@@ -63,7 +66,7 @@ class TextMosaic:
     ):
         if tiles.tile_data.shape[0] > self.text_map.shape[0]:
             raise ValueError(
-                f"The provided tile library has {tiles.shape[0]} tiles but the current text map only has {self.text_map.size} characters"
+                f"The provided tile library has {tiles.tile_data.shape[0]} tiles but the current text map only has {self.text_map.size} characters"
             )
 
         best = cmp(self.image_mosaic.tile_data, tiles.tile_data)

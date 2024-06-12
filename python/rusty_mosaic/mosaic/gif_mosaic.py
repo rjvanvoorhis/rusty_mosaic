@@ -5,6 +5,7 @@ import pathlib
 import numpy as np
 import imageio.v3 as iio
 from PIL import Image
+from PIL import ImageOps
 from concurrent import futures
 
 from rusty_mosaic import utils
@@ -24,7 +25,7 @@ class GifMosaic:
         return np.asarray([frame.pixmap for frame in self.frames])
 
     def save(self, outfile: typing.Union[str, pathlib.Path]):
-        iio.imwrite(outfile, self.tile_data, fps=self.fps)
+        iio.imwrite(outfile, self.tile_data, fps=self.fps, loop=0)
 
     @classmethod
     def load(
@@ -33,6 +34,7 @@ class GifMosaic:
         tile_size: int = 8,
         image_type: str = "L",
         scale: typing.Union[int, float] = 1,
+        invert: bool = False,
     ) -> "GifMosaic":
         metadata = iio.immeta(filename)
         frames = iio.imread(filename)
@@ -41,9 +43,18 @@ class GifMosaic:
             or int(frames.shape[0] / metadata.get("duration", 1_000_000_000))
             or 30
         )
+
+        def process_frame(frame: np.ndarray) -> Image.Image:
+            image = utils.scale_image(
+                Image.fromarray(frame).convert(image_type), scale=scale
+            )
+            if invert:
+                image = ImageOps.invert(image)
+            return image
+
         mosaics = [
             mosaic.ImageMosaic.from_image(
-                utils.scale_image(Image.fromarray(image).convert(image_type), scale),
+                process_frame(image),
                 tile_size=tile_size,
             )
             for image in frames

@@ -20,9 +20,11 @@ class Mosaic(typing.Protocol):
     @property
     def tile_data(self) -> np.ndarray:
         """Get the underlying image blocks"""
+        ...
 
     def save(self, outfile: PathLike) -> None:
         """Save a representation of the mosaic to a file"""
+        ...
 
     @classmethod
     def load(
@@ -31,6 +33,7 @@ class Mosaic(typing.Protocol):
         tile_size: int = 8,
         image_type: str = "L",
         scale: typing.Union[int, float] = 1,
+        invert: bool = False,
         **kwargs: typing.Any,
     ) -> "Mosaic":
         """Initialize the mosaic from a file
@@ -41,6 +44,7 @@ class Mosaic(typing.Protocol):
             image_type (str, optional): An image mode. Defaults to "L".
             scale (typing.Union[int, float], optional): How much larger to make the resulting image. Defaults to 1.
         """
+        ...
 
     def replace_tiles(
         self,
@@ -58,6 +62,7 @@ class Mosaic(typing.Protocol):
         Returns:
             Mosaic: A mosaic with the tiles replaced
         """
+        ...
 
 
 __all__ = ["Mosaic", "GifMosaic", "TextGifMosaic", "TextMosaic", "ImageMosaic"]

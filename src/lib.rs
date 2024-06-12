@@ -27,6 +27,14 @@ fn find_best_tiles_i32(images: Vec<Vec<i32>>, tiles: Vec<Vec<i32>>) -> Vec<usize
         .collect()
 }
 
+#[pyfunction]
+fn parallel_find_best_tiles_i32(images: Vec<Vec<i32>>, tiles: Vec<Vec<i32>>) -> Vec<usize> {
+    images
+        .par_iter()
+        .map(|image| find_best_tile_i32(image, &tiles))
+        .collect()
+}
+
 fn find_best_tile_i32(image: &[i32], tiles: &Vec<Vec<i32>>) -> usize {
     tiles.iter()
         .enumerate()
@@ -60,6 +68,7 @@ fn find_best_tile_f64(image: &[f64], tiles: &Vec<Vec<f64>>, diff_func: fn(&[f64]
 #[pyo3(name="_lib")]
 fn rusty_mosaic(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(find_best_tiles_i32, m)?)?;
+    m.add_function(wrap_pyfunction!(parallel_find_best_tiles_i32, m)?)?;
     m.add_function(wrap_pyfunction!(find_best_tiles_f64, m)?)?;
     Ok(())
 }

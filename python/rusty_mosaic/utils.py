@@ -17,7 +17,8 @@ def scale_image(image: Image.Image, scale: typing.Union[int, float]) -> Image.Im
     if scale <= 0:
         raise ValueError("Scaling factor must be non-zero")
     return resize_image(
-        image, tuple(int(dimension * scale) for dimension in image.size)
+        image,
+        (int(image.size[0] * scale), int(image.size[1] * scale)),
     )
 
 

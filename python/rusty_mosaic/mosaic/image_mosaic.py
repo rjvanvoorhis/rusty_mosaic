@@ -3,6 +3,7 @@ import pathlib
 import dataclasses
 
 from PIL import Image
+from PIL import ImageOps
 import numpy as np
 
 
@@ -35,7 +36,7 @@ class ImageMosaic:
 
     @staticmethod
     def _blocks_to_pixmap(blocks: np.ndarray, tile_size: int, rows: int) -> np.ndarray:
-        channels = blocks.shape[1] / (tile_size * tile_size)
+        channels = int(blocks.shape[1] / (tile_size * tile_size))
         if channels == 1:
             blocks = blocks.reshape(rows, -1, tile_size, tile_size)
         else:
@@ -81,11 +82,13 @@ class ImageMosaic:
         tile_size: int = 8,
         image_type: str = "L",
         scale: typing.Union[int, float] = 1,
+        invert: bool = False,
     ):
         filename = str(filename)
         with Image.open(filename) as image:
             image.format = filename.split(".")[-1] if not image.format else image.format
             image = image.convert(image_type)
+            image = ImageOps.invert(image) if invert else image
             inst = cls.from_image(utils.scale_image(image, scale), tile_size)
         return inst
 
@@ -102,3 +105,6 @@ class ImageMosaic:
 
         tile_data = tiles.tile_data[best]
         return type(self)(tile_data, self.tile_size, self.rows)
+
+
+url = "https://thomasbeebe.smugmug.com/services/api/json/1.4.0/?galleryType=album&albumId=399753739&albumKey=QJ6Cxv&nodeId=DjpZ8N&PageNumber=0&imageId=0&imageKey=&returnModelList=true&PageSize=500&imageSizes=S,Th&method=rpc.gallery.getalbum"

@@ -5,6 +5,7 @@ import pathlib
 import numpy as np
 import imageio.v3 as iio
 from PIL import Image
+from PIL import ImageOps
 from concurrent import futures
 
 from rusty_mosaic import utils
@@ -38,6 +39,7 @@ class TextGifMosaic:
         tile_size: int = 8,
         image_type: str = "L",
         scale: typing.Union[int, float] = 1,
+        invert: bool = False,
     ) -> "TextGifMosaic":
         metadata = iio.immeta(filename)
         frames = iio.imread(filename)
@@ -46,9 +48,18 @@ class TextGifMosaic:
             or int(frames.shape[0] / metadata.get("duration", 1_000_000_000))
             or 60
         )
+
+        def process_frame(frame: np.ndarray) -> Image.Image:
+            image = utils.scale_image(
+                Image.fromarray(frame).convert(image_type), scale=scale
+            )
+            if invert:
+                image = ImageOps.invert(image)
+            return image
+
         mosaics = [
             mosaic.TextMosaic.from_image(
-                utils.scale_image(Image.fromarray(image).convert(image_type), scale),
+                process_frame(image),
                 tile_size=tile_size,
             )
             for image in frames
